@@ -4,10 +4,10 @@ This README provides an overview of Kafka commands used to manage topics, and al
 
 ## Docker Container Setup
 
-Ensure that you have the Kafka Docker container named `kafka0` up and running before executing the following commands. If you haven't set up the container, please refer to our Kafka setup documentation or use the following Docker command to run a basic Kafka container:
+Ensure that you have the Kafka Docker container named `kafka0` up and running before executing the following commands. If you haven't set up the container, please use the following Docker command to run a basic Kafka cluster in the workshop directory:
 
 ```bash
-docker run -d --name kafka0 -p 9092:9092 -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 -e KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT -e KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092 -e KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT -e KAFKA_ZOOKEEPER_CONNECT=localhost:2181 wurstmeister/kafka:latest
+docker compose up -d
 ```
 
 ## Kafka Topics Commands
