@@ -35,3 +35,5 @@ bld/
 # Visual Studio and Visual Studio Code
 .vs/
 .vscode/
+
+/workshop1/Code/TypeScript/solution/node_modules/
