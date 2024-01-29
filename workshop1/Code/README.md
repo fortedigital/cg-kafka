@@ -71,6 +71,7 @@ How could you simplify how the consumer/producer are created, maybe prepare the 
 **Hint:**
 
 <span class="blacked-out">Use a configuration, and a settings file.</span>
+
 <style>
 .blacked-out {
     background-color: black;
