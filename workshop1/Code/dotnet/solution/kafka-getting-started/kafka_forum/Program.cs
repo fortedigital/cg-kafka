@@ -7,7 +7,7 @@ IConfiguration configuration = new ConfigurationBuilder()
         .AddJsonFile("appsettings.json", false, true)
         .Build();
 
-const string TOPIC = "messages";
+const string TOPIC = "purchases";
 
 // Create Kafka Producer config
 var producerConfig = new ProducerConfig(new Dictionary<string, string>(configuration.AsEnumerable()));
@@ -44,11 +44,14 @@ using (var producer = new ProducerBuilder<string, string>(producerConfig).Build(
                     // consume and display the message
                     var cr = consumer.Consume(cts.Token);
                     Console.WriteLine($"Consumed event from topic {TOPIC}: key = {cr.Message.Key,-10} value = {cr.Message.Value}");
+
+                    consumer.Commit(cr);
                 }
             }
             catch (OperationCanceledException)
             {
                 // Ctrl-C was pressed.
+                Console.WriteLine($"ctrl+c, close the thread");
             }
             finally
             {
@@ -69,6 +72,7 @@ using (var producer = new ProducerBuilder<string, string>(producerConfig).Build(
             // Check for exit flag
             if(input.ToLower() == "exit")
             {
+                Console.WriteLine($"Good bye, click ctrl+c to close the consumer!");
                 break;
             }
 
