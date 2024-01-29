@@ -20,6 +20,8 @@ The primary objective of this task is to demonstrate the end-to-end flow of stre
 3. **Consuming Messages from Kafka:**
     - Develop a Kafka consumer application to read messages from the Kafka topic.
     - Implement logic to process these messages and prepare them for indexing into OpenSearch.
+      - Use category information from the messages to determine the appropriate OpenSearch index to store the data.
+    - You may choose to use a Kafka consumer library in your preferred programming language (e.g., Java, Python) to simplify the process of consuming messages from Kafka.
 
 4. **Indexing Data into OpenSearch:**
     - Utilize the OpenSearch client SDK or REST APIs to index the processed data from Kafka into OpenSearch.
