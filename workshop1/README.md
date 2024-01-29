@@ -28,8 +28,10 @@ Each container has some properties:
 The volumes themselves are defined at the root level with the `volumes` key. We need volumes when we want to persist data in a container, because a container's file-system will reset every time the container is stopped and started. When we define volumes, they will keep data between container restarts.
 
 ---
+<br>
 
-# Workshop 1: Getting started
+# Workshop 1: Getting started with Kafka 
+
 In this workshop we will get a simple first look at Kafka and how to create messages and consume those messages.
 
 ## Requirements
@@ -74,24 +76,23 @@ Check that the messages appear in the CLI Consumer, and note how the messages ar
 Create a consumer that consumes messages from the *purchases*. Run this consumer at the same time as you run the CLI.
 A consumer runs in a infinite loop, make sure you can handle exiting this loop gracefully.
 
-## Step 2.
+### Step 2.
 
 Start a second version of the consumer, if you are also running the CLI you now have 3 different consumers running. What do you notice about the messages now?
 
 Can you add a third version of your consumer?
 
 ---
+<br>
 
-# Time left? Try the following!
+# Time left? Try the following.
 
 ## Custom object
 
-Create a new topic with 3 partitions and a replication factor of 2.
 Create a class *Purchase* with a price, name, id, and quantity.
 
 Replace the items with instances of the Purchase class and add a random quantity. Instead of sending a single string message, try to add a specified Serializer to the kafka message, and send an instance of the Purchase class.
 
-Make sure your consumer is also registered to consume the class with the same serializer.
 
 ## Still have more time?
 
