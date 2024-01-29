@@ -69,11 +69,7 @@ Purchase[] items =
     },
 };
 
-var producerConfig = new ProducerConfig
-{
-    BootstrapServers = "localhost:19092",
-};
-
+// TODO: Use custom serilizer.
 using (var producer = new ProducerBuilder<string, string>(configuration.AsEnumerable()).Build())
 {
     const int NUMMESSAGES = 15;
