@@ -68,18 +68,18 @@ Replace the items with instances of the Purchase class and add a random quantity
 Notice how the producer and consumers take custom arguments as input? 
 How could you simplify how the consumer/producer are created, maybe prepare the program for different environments?
 
-**Hint:**
+<details>
+<summary> Hint </summary>
 
-<span class="blacked-out">Use a configuration, and a settings file.</span>
+### Config
+Use a config file with an appsettings.json file (or language equivalent)
+To read the information use a ConfigurationBuilder
 
-<style>  
-    .blacked-out {
-        background-color: black;
-        color: black;
-        user-select: none;
-    }  
-    .blacked-out:hover {
-        background-color: gray;
-        color: white;
-    }  
-</style>
+```c#
+IConfiguration configuration = new ConfigurationBuilder()
+        .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+        .AddJsonFile("appsettings.json", false, true)
+        .Build();
+```
+
+</details>
