@@ -31,4 +31,4 @@ kafka-topics.sh --bootstrap-server localhost:9092 --list
 Lists all topics in the Kafka cluster with the specified bootstrap server (`localhost:9092`).
 
 ... (continue with other readmes)
-[1-kafka-topics.md](../CLI/1-kafka-topics.md)
+[1-kafka-topics.md](/1-kafka-topics.md)
