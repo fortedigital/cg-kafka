@@ -1,3 +1,7 @@
+# GO BACK TO [Workshop 1/Code/README](../README.md)
+Dette er en guide for å lage consumer og producer men dette er ikke oppgaven.
+Denne kan brukes hvis dere sitter fast.
+
 # Kafka .net Producer and Consumer
 
 In this workshop we will get a simple first look at Kafka and how to create messages and consume those messages.
