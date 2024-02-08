@@ -7,7 +7,7 @@ IConfiguration configuration = new ConfigurationBuilder()
         .AddJsonFile("appsettings.json", false, true)
         .Build();
 
-const string TOPIC = "purchases";
+const string TOPIC = "Jokes";
 
 // Create Kafka Producer config
 var producerConfig = new ProducerConfig(new Dictionary<string, string>(configuration.AsEnumerable()));
@@ -41,9 +41,28 @@ using (var producer = new ProducerBuilder<string, string>(producerConfig).Build(
             {
                 while (true)
                 {
-                    // consume and display the message
+                    //consume and display the message
                     var cr = consumer.Consume(cts.Token);
-                    Console.WriteLine($"Consumed event from topic {TOPIC}: key = {cr.Message.Key,-10} value = {cr.Message.Value}");
+
+                    var user = cr.Key != null ? cr.Key : "Unnamed" ;
+                    var message = cr.Message.Value;
+
+                    if (user.ToLower() == "thomas")
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                    }
+                    else if(user == "Unnamed")
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                    }
+
+                    Console.Write($"{user}: \t");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.WriteLine($"{message}");
 
                     consumer.Commit(cr);
                 }
@@ -66,7 +85,19 @@ using (var producer = new ProducerBuilder<string, string>(producerConfig).Build(
         Console.WriteLine("Type 'exit' to stop the application");
         while (true)
         {
-            Console.WriteLine("Send a message");
+
+            int initialLeft = Console.CursorLeft;
+            int initialTop = Console.CursorTop;
+
+            while (!Console.KeyAvailable)
+            {
+                Console.Write("Send a message...");
+                Console.SetCursorPosition(initialLeft, initialTop);
+                Thread.Sleep(100);
+            }
+
+            Console.SetCursorPosition((int)initialLeft, (int)initialTop);
+            Console.Write(" ", Console.WindowWidth - initialLeft);
             var input = Console.ReadLine();
 
             // Check for exit flag
@@ -89,7 +120,7 @@ using (var producer = new ProducerBuilder<string, string>(producerConfig).Build(
                 }
                 else
                 {
-                    Console.WriteLine($"Produced event to topic {TOPIC}: key = {message.Key,-10} value = {input}");
+                    //Console.WriteLine($"Produced event to topic {TOPIC}: key = {message.Key,-10} value = {input}");
                 }
             });
             
