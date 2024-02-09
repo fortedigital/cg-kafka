@@ -1,0 +1,44 @@
+{
+  "event": "message",
+  "id": [
+    {
+      "topic": "eqiad.mediawiki.recentchange",
+      "partition": 0,
+      "offset": -1
+    },
+    {
+      "topic": "codfw.mediawiki.recentchange",
+      "partition": 0,
+      "timestamp": 1707481049001
+    }
+  ],
+  "data": {
+    "$schema": "/mediawiki/recentchange/1.0.0",
+    "meta": {
+      "uri": "https://commons.wikimedia.org/wiki/Category:Bruno_de_Vaulserre._%22Le_Fleuve_Bleu_et_son_bassin%22,_par_le_vicomte_Bruno_de_Vaulserre,_membre_de_la_Mission_des_chemins_de_fer_de_p%C3%A9n%C3%A9tration_en_Chine,_1898-1899_-_btv1b108708521",
+      "request_id": "4c2091d3-0bab-4f23-aed8-09cb033207e5",
+      "id": "73d9548e-038b-4051-97c3-c0f57c81fde2",
+      "dt": "2024-02-09T12:17:29Z",
+      "domain": "commons.wikimedia.org",
+      "stream": "mediawiki.recentchange",
+      "topic": "codfw.mediawiki.recentchange",
+      "partition": 0,
+      "offset": 1010135314
+    },
+    "id": 2430431509,
+    "type": "categorize",
+    "namespace": 14,
+    "title": "Category:Bruno de Vaulserre. \"Le Fleuve Bleu et son bassin\", par le vicomte Bruno de Vaulserre, membre de la Mission des chemins de fer de pénétration en Chine, 1898-1899 - btv1b108708521",
+    "title_url": "https://commons.wikimedia.org/wiki/Category:Bruno_de_Vaulserre._%22Le_Fleuve_Bleu_et_son_bassin%22,_par_le_vicomte_Bruno_de_Vaulserre,_membre_de_la_Mission_des_chemins_de_fer_de_p%C3%A9n%C3%A9tration_en_Chine,_1898-1899_-_btv1b108708521",
+    "comment": "[[:File:Bruno de Vaulserre. \"Le Fleuve Bleu et son bassin\", par le vicomte Bruno de Vaulserre, membre de la Mission des chemins de fer de pénétration en Chine, 1898-1899 - btv1b108708521 (015 of 123).jpg]] added to category",
+    "timestamp": 1707481049,
+    "user": "Gzen92Bot",
+    "bot": true,
+    "notify_url": "https://commons.wikimedia.org/w/index.php?diff=850259743&oldid=850258568&rcid=2430431509",
+    "server_url": "https://commons.wikimedia.org",
+    "server_name": "commons.wikimedia.org",
+    "server_script_path": "/w",
+    "wiki": "commonswiki",
+    "parsedcomment": "<a href=\"/wiki/File:Bruno_de_Vaulserre._%22Le_Fleuve_Bleu_et_son_bassin%22,_par_le_vicomte_Bruno_de_Vaulserre,_membre_de_la_Mission_des_chemins_de_fer_de_p%C3%A9n%C3%A9tration_en_Chine,_1898-1899_-_btv1b108708521_(015_of_123).jpg\" title=\"File:Bruno de Vaulserre. &quot;Le Fleuve Bleu et son bassin&quot;, par le vicomte Bruno de Vaulserre, membre de la Mission des chemins de fer de pénétration en Chine, 1898-1899 - btv1b108708521 (015 of 123).jpg\">File:Bruno de Vaulserre. &quot;Le Fleuve Bleu et son bassin&quot;, par le vicomte Bruno de Vaulserre, membre de la Mission des chemins de fer de pénétration en Chine, 1898-1899 - btv1b108708521 (015 of 123).jpg</a> added to category"
+  }
+}
