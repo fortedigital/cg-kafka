@@ -1,4 +1,7 @@
 ﻿using Confluent.Kafka;
+using Confluent.Kafka.SyncOverAsync;
+using Confluent.SchemaRegistry;
+using Confluent.SchemaRegistry.Serdes;
 
 const string TOPIC = "purchases";
 
@@ -9,6 +12,12 @@ var consumerConfig = new ConsumerConfig
     AutoOffsetReset = AutoOffsetReset.Earliest
 };
 
+var schemaRegCon = new SchemaRegistryConfig
+{
+    Url = "http://localhost:8081/",
+};
+
+
 CancellationTokenSource cts = new CancellationTokenSource();
 Console.CancelKeyPress += (_, e) =>
 {
@@ -16,7 +25,7 @@ Console.CancelKeyPress += (_, e) =>
     cts.Cancel();
 };
 
-using (var consumer = new ConsumerBuilder<string, string>(consumerConfig).Build())
+using (var consumer = new ConsumerBuilder<string, Purchase>(consumerConfig).SetValueDeserializer(new JsonDeserializer<Purchase>().AsSyncOverAsync()).Build())
 {
     consumer.Subscribe(TOPIC);
 
@@ -25,7 +34,7 @@ using (var consumer = new ConsumerBuilder<string, string>(consumerConfig).Build(
         while (true)
         {
             var cr = consumer.Consume(cts.Token);
-            Console.WriteLine($"Consumed event from topic {TOPIC}: key = {cr.Message.Key,-5} value = {cr.Message.Value}");
+            Console.WriteLine($"Consumed event from topic {TOPIC}: key = {cr.Message.Key,-5} value = {cr.Message.Value.Id}, {cr.Message.Value.Name}, {cr.Message.Value.Price}, {cr.Message.Value.Quantity}");
         }
     }
     catch(OperationCanceledException) 

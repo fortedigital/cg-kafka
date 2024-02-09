@@ -1,12 +1,20 @@
 ﻿using Confluent.Kafka;
+using Confluent.Kafka.SyncOverAsync;
+using Confluent.SchemaRegistry;
+using Confluent.SchemaRegistry.Serdes;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 using producer_extra;
+//using Newtonsoft.Json;
 
 IConfiguration configuration = new ConfigurationBuilder()
         .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
         .AddJsonFile("appsettings.json", false, true)
         .Build();
+
+var schemaRegCon = new SchemaRegistryConfig
+{
+    Url = "http://localhost:8081/",
+};
 
 const string TOPIC = "purchases";
 
@@ -70,7 +78,10 @@ Purchase[] items =
 };
 
 // TODO: Use custom serilizer.
-using (var producer = new ProducerBuilder<string, string>(configuration.AsEnumerable()).Build())
+using (var schemaReg = new CachedSchemaRegistryClient(schemaRegCon))
+using (var producer = new ProducerBuilder<string, Purchase>(configuration.AsEnumerable())
+    .SetValueSerializer(new JsonSerializer<Purchase>(schemaReg).AsSyncOverAsync())
+    .Build())
 {
     const int NUMMESSAGES = 15;
     for(int i = 0; i < NUMMESSAGES; i++)
@@ -78,9 +89,9 @@ using (var producer = new ProducerBuilder<string, string>(configuration.AsEnumer
         var user = users[rnd.Next(users.Length)];
         var item = items[rnd.Next(items.Length)];
 
-        var stringItem = JsonConvert.SerializeObject(item);
+        //var stringItem = JsonConvert.SerializeObject(item);
 
-        producer.Produce(TOPIC, new Message<string, string> { Key = user, Value = stringItem }, (deliveryReport) =>
+        producer.Produce(TOPIC, new Message<string, Purchase> { Key = user, Value = item }, (deliveryReport) =>
         {
             if (deliveryReport.Error.Code != ErrorCode.NoError)
             {
