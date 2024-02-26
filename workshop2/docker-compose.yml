@@ -136,7 +136,7 @@ services:
     #image: confluentinc/cp-kafka-connect:7.3.2
     # Custom image with additional plugins
     build:
-      context: 1 - Connect/connectPlugins/
+      context: 2 - Connect/kafka-connect/
     hostname: kafka-connect
     container_name: kafka-connect
     ports:
