@@ -3,8 +3,6 @@ using Confluent.Kafka.SyncOverAsync;
 using Confluent.SchemaRegistry;
 using Confluent.SchemaRegistry.Serdes;
 
-const string TOPIC = "purchases";
-
 var consumerConfig = new ConsumerConfig
 {
     BootstrapServers = "localhost:19092",
@@ -16,6 +14,8 @@ var schemaRegCon = new SchemaRegistryConfig
 {
     Url = "http://localhost:8081/",
 };
+
+const string TOPIC = "RecentChanges";
 
 
 CancellationTokenSource cts = new CancellationTokenSource();
@@ -34,11 +34,10 @@ using (var consumer = new ConsumerBuilder<string, object>(consumerConfig).SetVal
         while (true)
         {
             var cr = consumer.Consume(cts.Token);
-            Console.WriteLine(cr);
-            //Console.WriteLine($"Consumed event from topic {TOPIC}: key = {cr.Message.Key,-5} value = {cr.Message.Value.Id}, {cr.Message.Value.Name}, {cr.Message.Value.Price}, {cr.Message.Value.Quantity}");
+            Console.WriteLine(cr.Value.ToString());
         }
     }
-    catch(OperationCanceledException) 
+    catch (OperationCanceledException)
     {
         // Ctrl-c was pressed
     }

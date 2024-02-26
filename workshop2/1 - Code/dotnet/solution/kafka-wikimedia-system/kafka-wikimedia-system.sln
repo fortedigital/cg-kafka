@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34031.279
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "kafka-wikimedia-stream", "kafka-wikimedia-stream\kafka-wikimedia-stream.csproj", "{59D425CE-0603-470C-AC18-AA8238BC9CB9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "kafka-wikimedia-simpleConsumer", "kafka-wikimedia-simpleConsumer\kafka-wikimedia-simpleConsumer.csproj", "{CBE8CBEF-0EBC-4845-9C44-06700518E046}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{59D425CE-0603-470C-AC18-AA8238BC9CB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59D425CE-0603-470C-AC18-AA8238BC9CB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59D425CE-0603-470C-AC18-AA8238BC9CB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59D425CE-0603-470C-AC18-AA8238BC9CB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBE8CBEF-0EBC-4845-9C44-06700518E046}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBE8CBEF-0EBC-4845-9C44-06700518E046}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBE8CBEF-0EBC-4845-9C44-06700518E046}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBE8CBEF-0EBC-4845-9C44-06700518E046}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9DA930F1-CA2C-4EE7-B47E-4E3687B7F698}
+	EndGlobalSection
+EndGlobal
