@@ -85,6 +85,8 @@ services:
       KAFKA_CLUSTERS_0_NAME: "kafka-cluster"
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "kafka-0:9092"
       KAFKA_CLUSTERS_0_SCHEMAREGISTRY: "http://kafka-schema-registry:8081"
+      KAFKA_CLUSTERS_0_KAFKACONNECT_0_NAME: "kafka-connect"
+      KAFKA_CLUSTERS_0_KAFKACONNECT_0_ADDRESS: "http://kafka-connect:8083"
 
   kafka-schema-registry:
     image: confluentinc/cp-schema-registry:latest
