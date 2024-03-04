@@ -21,14 +21,11 @@ The primary objective of this task is to demonstrate the end-to-end flow of stre
 - Create a new kafka topic to store incoming messages from the Wikimedia stream. Create a new Kafka producer that connect to the stream, parse the JSON and produce text message.
 
 ### Step 2. Schema registry.
+- Go to folder 2 - Schema Registry and follow the instructions there.
 
-- Take down the kafka service you are running, and add a schema registry to the docker compose file.
-
-- Add the schema registry to the UI.
-
-- Create a class that matches the Wikimedia json and create and save the json as a schema in your schema registry.
-
-- Change your producer to produce messages with your schema. And change the consumer to use the schema.
+- After you finish the tasks in 2 - Schema Registry, you should have a producer and consumer that uses the schema registry to produce and consume messages.
+  - Use what you have learned here to create a class that matches the Wikimedia json and create and save the json as a schema in your schema registry.
+  - Change your Wikimedia producer and consumer to produce and consume messages with your schema.
 
 .net
 ```csproj
