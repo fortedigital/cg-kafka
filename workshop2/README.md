@@ -59,22 +59,9 @@ The primary objective of this task is to demonstrate the end-to-end flow of stre
 ### Step 3. Kafka Connect
 
 #### Step 3.1 - Setup Source Connectors
-- Take down you kafka producer and consumer for wikimedia and use Kafka Connect to stream the data to a new topic.
-- To do this go to the Kafka Connect UI which you can find at 'localhost:8000', and create a new connector of type WikimediaSourceConnector and with the configuration that you can find [here](/workshop2/2%20-%20Connect/connectorSrcs/properties/wikimedia-source.properties).
-- Create the task and check that the data is being streamed to the topic you defined in your configuration (e.g. `wikimedia-events`)
-  - Also check the logs of the kafka connect container to see the task is running correctly.
-- Create more tasks with different configurations to stream the data to different topics, and experiment with different types of formats for the messages.
-
-#### Step 3.2 - Setup Sink Connectors
-- Now do the same for the wikimedia consumer, but use Kafka Connect to consume the data from the topic you defined in the previous step and stream it to opensearch.
-- To do this go to the Kafka Connect UI and create a new connector of type OpensearchSinkConnector and with the configuration that you can find [here](/workshop2/2%20-%20Connect/connectorSrcs/properties/opensearch-sink.properties).
-- Create the task and check that the data is being streamed to opensearch. You can access opensearch at `localhost:9200` and check that the data is being streamed correctly.
-  - Also check the logs of the kafka connect container to see the task is running correctly.
-- Create more tasks with different configurations to stream the data to different sinks, and experiment with different types of formats for the messages.
-  - Also try using the JDBC sink connector to stream the data to a database. You can use the configuration that you can find [here](/workshop2/2%20-%20Connect/connectorSrcs/properties/postgres-sink.properties).
+- Go to folder 3 - Connect and follow the instructions there.
 
 
-### Step 4. Kafka Streams
-
-- Take down your kafka service and implement a Kafka Stream to add the Wikimedia streamed data to your kafka service.
+### Step 4. Kafka Rest Proxy
+- Go to folder 4 - Rest Proxy and follow the instructions there.
 
