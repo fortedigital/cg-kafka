@@ -1,7 +1,10 @@
-﻿using Confluent.Kafka;
+﻿using cg_kafka_producer_schemaRegistry;
+using Confluent.Kafka;
+using Confluent.Kafka.SyncOverAsync;
+using Confluent.SchemaRegistry;
+using Confluent.SchemaRegistry.Serdes;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using producer_extra;
 
 IConfiguration configuration = new ConfigurationBuilder()
         .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
@@ -14,8 +17,8 @@ Random rnd = new Random();
 
 string[] users = { "Daud", "Thomas", "Ola", "Erol", "Ludvig" };
 
-Purchase[] items = 
-{ 
+Purchase[] items =
+{
     new Purchase
     {
         Id = Guid.NewGuid(),
@@ -69,18 +72,24 @@ Purchase[] items =
     },
 };
 
-// TODO: Use custom serilizer.
-using (var producer = new ProducerBuilder<string, string>(configuration.AsEnumerable()).Build())
+SchemaRegistryConfig shemaRegConfig = new()
+{
+    Url = "http://localhost:8081/",
+};
+
+using (var schemaRegistry = new CachedSchemaRegistryClient(shemaRegConfig))
+using (var producer = new ProducerBuilder<string, Purchase>(configuration.AsEnumerable())
+    .SetValueSerializer(new JsonSerializer<Purchase>(schemaRegistry).AsSyncOverAsync())
+    .Build())
 {
     const int NUMMESSAGES = 15;
-    for(int i = 0; i < NUMMESSAGES; i++)
+    for (int i = 0; i < NUMMESSAGES; i++)
     {
         var user = users[rnd.Next(users.Length)];
         var item = items[rnd.Next(items.Length)];
 
-        var stringItem = JsonConvert.SerializeObject(item);
 
-        producer.Produce(TOPIC, new Message<string, string> { Key = user, Value = stringItem }, (deliveryReport) =>
+        producer.Produce(TOPIC, new Message<string, Purchase> { Key = user, Value = item }, (deliveryReport) =>
         {
             if (deliveryReport.Error.Code != ErrorCode.NoError)
             {

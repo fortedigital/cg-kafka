@@ -3,12 +3,15 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>cg_kafka_wikimedia_consumer</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Confluent.Kafka" Version="2.3.0" />
+    <PackageReference Include="Confluent.SchemaRegistry.Serdes.Json" Version="2.3.0" />
+    <PackageReference Include="Confluent.SchemaRegistry" Version="2.3.0" />
   </ItemGroup>
 
 </Project>
