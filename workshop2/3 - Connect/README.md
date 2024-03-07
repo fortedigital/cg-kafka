@@ -64,6 +64,7 @@ value.converter=org.apache.kafka.connect.json.JsonConverter
 key.converter=org.apache.kafka.connect.json.JsonConverter
 
 # Wikimedia Source Connector
+name=wikimedia-source-connector-with-json
 connector.class=no.fortedigital.kafka.WikimediaSourceConnector
 tasks.max=1
 topic=wikimedia-events
@@ -75,9 +76,9 @@ name=wikimedia-source-connector-with-schema-registry
 connector.class=no.fortedigital.kafka.WikimediaSourceConnector
 tasks.max=1
 topic=wikimedia-events-avro-schema
-key.converter=io.confluent.connect.json.JsonSchemaConverter
+key.converter=io.confluent.connect.avro.AvroConverter
 key.converter.schema.registry.url=http://kafka-schema-registry:8081
-value.converter=io.confluent.connect.json.AvroConverter
+value.converter=io.confluent.connect.avro.AvroConverter
 value.converter.schema.registry.url=http://kafka-schema-registry:8081
 ```
 

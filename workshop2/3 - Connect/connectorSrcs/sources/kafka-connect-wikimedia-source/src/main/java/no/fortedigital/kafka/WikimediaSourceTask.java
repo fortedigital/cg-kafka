@@ -89,7 +89,19 @@ public class WikimediaSourceTask extends SourceTask {
   }
 
   public Struct buildRecordValue(Event event){
-      return new Struct(VALUE_SCHEMA)
+      // meta struct
+    Struct meta = new Struct(META_SCHEMA)
+            .put(META_ID_FIELD, event.getMeta().getId())
+            .put(URI_FIELD, event.getMeta().getUri())
+            .put(DT_FIELD, event.getMeta().getDt())
+            .put(REQUEST_ID_FIELD, event.getMeta().getRequest_id())
+            .put(DOMAIN_FIELD, event.getMeta().getDomain())
+            .put(TOPIC_FIELD, event.getMeta().getTopic())
+            .put(PARTITION_FIELD, event.getMeta().getPartition())
+            .put(OFFSET_FIELD, event.getMeta().getOffset());
+
+
+    Struct value = new Struct(VALUE_SCHEMA)
             .put(ID_FIELD, event.getId())
             .put(TYPE_FIELD, event.getType())
             .put(TITLE_FIELD, event.getTitle())
@@ -98,13 +110,39 @@ public class WikimediaSourceTask extends SourceTask {
             .put(TIMESTAMP_FIELD, event.getTimestamp())
             .put(USER_FILED, event.getUser())
             .put(SERVER_URL_FIELD, event.getServer_url())
+            .put(SERVER_NAME_FIELD, event.getServer_name())
+            .put(SERVER_SCRIPT_PATH_FIELD, event.getServer_script_path())
+            .put(NAMESPACE_FIELD, event.getNamespace())
             .put(WIKI_FIELD, event.getWiki())
             .put(PARSEDCOMMENT_FIELD, event.getParsedcomment())
-            .put(REQUEST_ID_FIELD, event.getMeta().getRequest_id())
-            .put(DOMAIN_FIELD, event.getMeta().getDomain())
-            .put(TOPIC_FIELD, event.getMeta().getTopic())
-            .put(PARTITION_FIELD, event.getMeta().getPartition())
-            .put(OFFSET_FIELD, event.getMeta().getOffset())
             .put(BOT_FIELD, event.isBot());
+
+    if (event.getType().equals("edit")) {
+      value.put(LENGTH_FIELD, new Struct(LENGTH_SCHEMA)
+              .put(OLD_FIELD, event.getLength().getOld())
+              .put(NEW_FIELD, event.getLength().getNew_()))
+              .put(REVISION_FIELD, new Struct(REVISION_SCHEMA)
+              .put(OLD_FIELD, event.getRevision().getOld())
+              .put(NEW_FIELD, event.getRevision().getNew_()))
+              .put(MINOR_FIELD, event.isMinor())
+              .put(PATROLLED_FIELD, event.isPatrolled());
+    } else if (event.getType().equals("log")) {
+      value.put(LOG_ID_FIELD, event.getLog_id())
+              .put(LOG_TYPE_FIELD, event.getLog_type())
+              .put(LOG_ACTION_FIELD, event.getLog_action());
+      if (event.getLog_params() != null) {
+        value.put(LOG_PARAMS_FIELD, new Struct(LOG_PARAMS_SCHEMA)
+                .put(DURATION_FIELD, event.getLog_params().getDuration())
+                .put(SITEWIDE_FIELD, event.getLog_params().isSitewide())
+                .put(FLAGS_FIELD, event.getLog_params().getFlags())
+                .put(IMG_TIMESTAMP_FIELD, event.getLog_params().getImg_timestamp())
+                .put(IMG_SHA1_FIELD, event.getLog_params().getImg_sha1()));
+      }
+    }
+
+    value.put(META_FIELD, meta);
+
+    return value;
+
   }
 }

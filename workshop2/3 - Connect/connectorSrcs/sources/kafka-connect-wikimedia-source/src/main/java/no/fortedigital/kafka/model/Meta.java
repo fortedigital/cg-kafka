@@ -5,6 +5,10 @@ import org.json.JSONObject;
 import static no.fortedigital.kafka.WikimediaSchemas.*;
 
 public class Meta {
+
+    public String id;
+    public String uri;
+    public String dt;
     public String request_id;
     public String domain;
     public String topic;
@@ -13,6 +17,31 @@ public class Meta {
 
     public Meta() {
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getUri() {
+        return uri;
+    }
+
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
+
+    public String getDt() {
+        return dt;
+    }
+
+    public void setDt(String dt) {
+        this.dt = dt;
+    }
+
     public String getRequest_id() {
         return request_id;
     }
@@ -55,6 +84,9 @@ public class Meta {
 
     public static Meta fromJSON(JSONObject jsonObject) {
         Meta meta = new Meta();
+        meta.setId(jsonObject.getString(META_ID_FIELD));
+        meta.setUri(jsonObject.getString(URI_FIELD));
+        meta.setDt(jsonObject.getString(DT_FIELD));
         meta.setRequest_id(jsonObject.getString(REQUEST_ID_FIELD));
         meta.setPartition(jsonObject.getInt(PARTITION_FIELD));
         meta.setOffset(jsonObject.getInt(OFFSET_FIELD));

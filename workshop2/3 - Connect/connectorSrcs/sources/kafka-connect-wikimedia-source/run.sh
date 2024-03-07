@@ -4,9 +4,7 @@ export CLASSPATH="$(find target/ -type f -name '*.jar'| grep '\-package' | tr '\
 if hash docker 2>/dev/null; then
     # for docker lovers
     docker build . -t simplesteph/kafka-connect-source-wikimedia:1.0
-    docker run --net=host --rm -t \
-           -v $(pwd)/offsets:/kafka-connect-source-wikimedia/offsets \
-           simplesteph/kafka-connect-source-wikimedia:1.0
+    docker run --net=host --rm -t -v "$(pwd)"/offsets:/kafka-connect-source-wikimedia/offsets  simplesteph/kafka-connect-source-wikimedia:1.0
 elif hash connect-standalone 2>/dev/null; then
     # for mac users who used homebrew
     connect-standalone config/worker.properties config/WikimediaSourceConnector.properties
