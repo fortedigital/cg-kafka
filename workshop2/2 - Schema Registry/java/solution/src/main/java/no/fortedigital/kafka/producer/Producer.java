@@ -32,13 +32,30 @@ public class Producer {
 
         Value value = new Value();
         value.setF1("hello world!!");
-        value.setF2(42);
+        //value.setF2(42);
+        value.setF3(true);
 
-        // create producer record
-        ProducerRecord<String, Value> producerRecord = new ProducerRecord<>(topic, value);
+        for (int i = 0; i < 10; i++) {
+            // create producer record
+            ProducerRecord<String, Value> producerRecord = new ProducerRecord<>(topic, value);
 
-        // send data
-        producer.send(producerRecord);
+            // send data
+            producer.send(producerRecord, (recordMetadata, exception) -> {
+                if (exception == null) {
+                    logger.info("Successfully received new metadata \n" +
+                            "Topic: " + recordMetadata.topic() + "\n" +
+                            "Partition: " + recordMetadata.partition() + "\n" +
+                            "Offset: " + recordMetadata.offset() + "\n" +
+                            "Timestamp: " + recordMetadata.timestamp());
+                }
+
+                else {
+                    logger.error("Can't produce,getting error", exception);
+                }
+            });
+        }
+
+
 
         // flush and close producer
         producer.flush();
