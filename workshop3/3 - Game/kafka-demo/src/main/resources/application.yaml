@@ -1,0 +1,14 @@
+ktor:
+    application:
+        modules:
+            - com.fortedigital.ApplicationKt.module
+    deployment:
+        port: 8080
+
+database:
+    embedded: false
+    host: localhost
+    port: 5432
+    databaseName: 'kafka'
+    user: 'kafka'
+    password: 'kafka'
