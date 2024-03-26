@@ -40,11 +40,16 @@ enum class Type {
 @Serializable
 enum class Category(val score: Int) {
     @SerialName("team-registration")
-    TEAM_REGISTRATION(10),
+    TEAM_REGISTRATION(5), // 1 TASK
     @SerialName("ping-pong")
-    PING_PONG(20),
+    PING_PONG(10), // 10 TASKS
+    @SerialName("arithmetic")
+    ARITHMETIC(20), // 20 TASKS
     @SerialName("base64")
-    BASE_64(30),
+    BASE_64(30), // 5 TASKS
     @SerialName("is-a-prime")
-    PRIME_NUMBER(40)
+    PRIME_NUMBER(50), // 10 TASKS
+    @SerialName("transactions")
+    TRANSACTIONS(100) // 20 TASKS
+
 }

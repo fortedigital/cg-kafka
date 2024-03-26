@@ -9,7 +9,7 @@ const TeamComponent = (props: Team) => {
   const answers = props.answers.sort((a, b) => a.position - b.position);
 
   return (
-    <div className="container border p-4 rounded-3 m-2">
+    <div className="container border p-4 rounded-3 m-2 shadow">
       <div className="row">
         <div className="col">
           <div className="row d-flex align-items-center justify-content-center">
@@ -28,7 +28,7 @@ const TeamComponent = (props: Team) => {
       </div>
       <div className="row">
         {answers.map((answer, index) => (
-          <div key={index} className="col">
+          <div key={index} className="col border">
             <h6>{answer.category}</h6>
             <p>{answer.totalAnswers}</p>
           </div>

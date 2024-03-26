@@ -66,6 +66,9 @@ class KafkaProcessor(private val questionRepository: QuestionRepository, private
                 Category.PING_PONG -> {
                     handlePingPong(message)
                 }
+                Category.ARITHMETIC -> {
+                    handleArithmetic(message)
+                }
                 Category.BASE_64 -> {
                     handleBase64(message)
                 }
@@ -80,7 +83,6 @@ class KafkaProcessor(private val questionRepository: QuestionRepository, private
             logger.error("Error handling message: $message", e)
         }
     }
-
 
     private suspend fun handleQuestion(message: String) {
         val question = jsonMapper.decodeFromString<QuestionMessage>(message)
@@ -136,6 +138,48 @@ class KafkaProcessor(private val questionRepository: QuestionRepository, private
         )
         answerRepository.create(answer)
     }
+
+    private suspend fun handleArithmetic(message: String) {
+        val arithmetic = handleCommon<AnswerMessage>(message) ?: return
+        val answerValue = arithmetic.answer.toIntOrNull() ?: run {
+            logger.error("Answer is not a number")
+            return
+        }
+
+        // check if answer is correct
+        val question = questionRepository.getByQuestionId(arithmetic.questionId)
+        val mathFunction = question!!.question.split("(")[0].toString()
+        val expectedValue = when(true) {
+            (mathFunction.split("+").size == 2) -> mathFunction.split("+")[0].trim().toInt() + mathFunction.split("+")[1].trim().toInt()
+            (mathFunction.split("-").size == 2) -> mathFunction.split("-")[0].trim().toInt() - mathFunction.split("-")[1].trim().toInt()
+            (mathFunction.split("*").size == 2) -> mathFunction.split("*")[0].trim().toInt() * mathFunction.split("*")[1].trim().toInt()
+            (mathFunction.split("/").size == 2) -> mathFunction.split("/")[0].trim().toInt() / mathFunction.split("/")[1].trim().toInt()
+            else -> {
+                logger.error("Unknown math function")
+                return
+            }
+        }
+
+        if (expectedValue != answerValue) {
+            logger.error("Answer is not correct")
+            return
+        }
+
+        val team = teamRepository.getTeamByName(arithmetic.teamName)
+
+        val answerEntity = Answer(
+            0,
+            team.id,
+            Category.ARITHMETIC.score,
+            arithmetic.messageId,
+            arithmetic.questionId,
+            arithmetic.category,
+            arithmetic.created,
+        )
+
+        answerRepository.create(answerEntity)
+    }
+
 
     private suspend fun handleBase64(message: String) {
         val base64 = handleCommon<AnswerMessage>(message) ?: return
