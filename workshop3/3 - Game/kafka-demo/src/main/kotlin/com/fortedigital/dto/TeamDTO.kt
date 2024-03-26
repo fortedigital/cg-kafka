@@ -18,5 +18,6 @@ data class CategoryScoreDTO(
     val position: Int,
     val category: Category,
     val totalScore: Int,
-    val totalAnswers: Int
+    val totalAnswers: Int,
+    val hasError: Boolean
 )

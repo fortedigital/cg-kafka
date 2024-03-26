@@ -4,7 +4,9 @@ import com.fortedigital.config.consumerProps
 import com.fortedigital.dto.TeamDTO
 import com.fortedigital.repository.*
 import com.fortedigital.service.formats.*
+import io.ktor.server.http.*
 import io.ktor.util.logging.*
+import kotlinx.datetime.Instant
 import kotlinx.serialization.json.Json
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.common.errors.WakeupException
@@ -75,6 +77,15 @@ class KafkaProcessor(private val questionRepository: QuestionRepository, private
                 Category.PRIME_NUMBER -> {
                     handlePrimeNumber(message)
                 }
+                Category.TRANSACTIONS -> {
+                    handleTransactions(message)
+                }
+                Category.MIN_MAX -> {
+                    handleMinMax(message)
+                }
+                Category.DEDUPLICATION -> {
+                    handleDeduplication(message)
+                }
                 else -> {
                     logger.error("Unknown category: ${commonObject.category}")
                 }
@@ -90,7 +101,9 @@ class KafkaProcessor(private val questionRepository: QuestionRepository, private
         if (byQuestionId != null) {
             logger.error("Received question exists in db, ignoring")
         } else {
-            val newQuestion = Question(0, question.messageId, question.question, question.category, question.created)
+            // check if created ends with Z and append it if not
+            val created = Instant.parse(if (question.created.endsWith("Z")) question.created else "${question.created}Z")
+            val newQuestion = Question(0, question.messageId, question.question, question.category, created)
             val id = questionRepository.create(newQuestion)
             logger.info("Question created with id: $id")
         }
@@ -114,6 +127,17 @@ class KafkaProcessor(private val questionRepository: QuestionRepository, private
         val team = TeamDTO(0, teamRegistration.teamName, 0, teamRegistration.answer, emptyList())
         val id = teamRepository.create(team)
         logger.info("Team created with id: $id")
+        val answer = Answer(
+            0,
+            team.id,
+            Category.PING_PONG.score,
+            teamRegistration.messageId,
+            teamRegistration.questionId,
+            teamRegistration.category,
+            teamRegistration.created,
+        )
+        val create = answerRepository.create(answer)
+        logger.info("Answer created with id: $create")
     }
 
     private suspend fun handlePingPong(message: String) {
@@ -136,7 +160,8 @@ class KafkaProcessor(private val questionRepository: QuestionRepository, private
             pingPong.category,
             pingPong.created,
         )
-        answerRepository.create(answer)
+        val create = answerRepository.create(answer)
+        logger.info("Answer created with id: $create")
     }
 
     private suspend fun handleArithmetic(message: String) {
@@ -177,7 +202,8 @@ class KafkaProcessor(private val questionRepository: QuestionRepository, private
             arithmetic.created,
         )
 
-        answerRepository.create(answerEntity)
+        val create = answerRepository.create(answerEntity)
+        logger.info("Answer created with id: $create")
     }
 
 
@@ -207,7 +233,8 @@ class KafkaProcessor(private val questionRepository: QuestionRepository, private
             base64.category,
             base64.created,
         )
-        answerRepository.create(answer)
+        val create = answerRepository.create(answer)
+        logger.info("Answer created with id: $create")
     }
 
     private suspend fun handlePrimeNumber(message: String) {
@@ -240,7 +267,8 @@ class KafkaProcessor(private val questionRepository: QuestionRepository, private
             prime.category,
             prime.created,
         )
-        answerRepository.create(answer)
+        val create = answerRepository.create(answer)
+        logger.info("Answer created with id: $create")
     }
 
     private fun isPrime(value: Int): Any? {
@@ -254,6 +282,123 @@ class KafkaProcessor(private val questionRepository: QuestionRepository, private
         }
         return true
     }
+
+    private suspend fun handleTransactions(message: String) {
+        val transactions = handleCommon<AnswerMessage>(message) ?: return
+        val currentBalance = transactions.answer.toIntOrNull()
+        if (currentBalance == null) {
+            logger.error("Answer is not a number")
+            return
+        }
+
+        // calculate balance based on previous questions
+        val question = questionRepository.getByQuestionId(transactions.questionId)
+        val previousQuestions = questionRepository.getPreviousQuestions(question!!).plus(question)
+        val expectedBalance = previousQuestions
+            .map {
+                val split = it.question.split(" ")
+                when(split[0]) {
+                    "INNSKUDD" -> split[1].toInt()
+                    "UTTREKK" -> -split[1].toInt()
+                    else -> 0
+                }
+            }.sum()
+
+
+        if (currentBalance != expectedBalance) {
+            logger.error("Answer is not correct")
+            return
+        }
+
+        val team = teamRepository.getTeamByName(transactions.teamName)
+        val answer = Answer(
+            0,
+            team.id,
+            Category.PRIME_NUMBER.score,
+            transactions.messageId,
+            transactions.questionId,
+            transactions.category,
+            transactions.created,
+        )
+        val create = answerRepository.create(answer)
+        logger.info("Answer created with id: $create")
+    }
+
+    private suspend fun handleMinMax(message: String) {
+        val minMax = handleCommon<AnswerMessage>(message) ?: return
+        val answerValue = minMax.answer.toIntOrNull()
+        if (answerValue == null) {
+            logger.error("Answer is not a number")
+            return
+        }
+
+        // check if answer is correct
+        val question = questionRepository.getByQuestionId(minMax.questionId)
+        val split = question!!.question.split(" i ")
+        val values = split[1].trim().removeSurrounding("[", "]").split(",").map { it.trim().toInt() }
+        val expectedValue = when(split[0].trim()) {
+            "HOYESTE" -> values.max()
+            "LAVESTE" -> values.min()
+            else -> {
+                logger.error("Unknown question")
+                return
+            }
+        }
+
+        if (answerValue != expectedValue) {
+            logger.error("Answer is not correct")
+            return
+        }
+
+        val team = teamRepository.getTeamByName(minMax.teamName)
+
+        val answer = Answer(
+            0,
+            team.id,
+            Category.MIN_MAX.score,
+            minMax.messageId,
+            minMax.questionId,
+            minMax.category,
+            minMax.created,
+        )
+
+        val create = answerRepository.create(answer)
+        logger.info("Answer created with id: $create")
+    }
+
+    private suspend fun handleDeduplication(message: String) {
+        val deduplication = handleCommon<AnswerMessage>(message) ?: return
+        val answerValue = deduplication.answer
+
+        when(answerValue) {
+            "you wont dupe me!" -> {
+                val team = teamRepository.getTeamByName(deduplication.teamName)
+
+                val answer = Answer(
+                    0,
+                    team.id,
+                    Category.DEDUPLICATION.score,
+                    deduplication.messageId,
+                    deduplication.questionId,
+                    deduplication.category,
+                    deduplication.created,
+                )
+                answerRepository.create(answer)
+            }
+            "you duped me!" -> {
+                answerRepository.deleteByQuestionId(deduplication.questionId)
+            }
+            else -> {
+                logger.error("Answer is not correct")
+                return
+            }
+        }
+        if (!answerValue.contentEquals("you wont dupe me!")) {
+            logger.error("Answer is not correct")
+            return
+        }
+    }
+
 
     private suspend inline fun<reified T: CommonMessage> handleCommon(message: String): T? {
         val answer = jsonMapper.decodeFromString<T>(message)

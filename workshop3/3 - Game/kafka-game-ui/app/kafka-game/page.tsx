@@ -29,7 +29,10 @@ const TeamComponent = (props: Team) => {
       <div className="row">
         {answers.map((answer, index) => (
           <div key={index} className="col border">
-            <h6>{answer.category}</h6>
+            <h6>
+              {answer.category}{" "}
+              {answer.hasError && <i className="bi bi-x-octagon-fill"></i>}
+            </h6>
             <p>{answer.totalAnswers}</p>
           </div>
         ))}

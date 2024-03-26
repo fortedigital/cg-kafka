@@ -1,5 +1,6 @@
 package com.fortedigital.service.formats
 
+import kotlinx.datetime.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -50,6 +51,9 @@ enum class Category(val score: Int) {
     @SerialName("is-a-prime")
     PRIME_NUMBER(50), // 10 TASKS
     @SerialName("transactions")
-    TRANSACTIONS(100) // 20 TASKS
-
+    TRANSACTIONS(100), // 20 TASKS
+    @SerialName("min-max")
+    MIN_MAX(200), // 5 TASKS
+    @SerialName("deduplication")
+    DEDUPLICATION(300), // 3 TASKS
 }

@@ -3,7 +3,9 @@ package com.fortedigital.repository
 import org.jetbrains.exposed.dao.id.IntIdTable
 import com.fortedigital.repository.DatabaseFactory.Companion.dbQuery
 import com.fortedigital.service.formats.Category
+import kotlinx.datetime.Instant
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.kotlin.datetime.timestamp
 
 
 class Question (
@@ -11,7 +13,7 @@ class Question (
     val messageId: String,
     val question: String,
     val category: Category,
-    val created: String
+    val created: Instant
 )  {
 }
 class QuestionRepository {
@@ -19,7 +21,7 @@ class QuestionRepository {
         val questionId = varchar("question_id", 64)
         val question = varchar("question", 256)
         val category = enumeration<Category>("category")
-        val created = varchar("created", 64)
+        val created = timestamp("created")
 
         fun toModel(it: ResultRow) = Question(
             it[id].value,
@@ -46,6 +48,13 @@ class QuestionRepository {
             QuestionTable.select { QuestionTable.questionId eq questionId }
                 .map(QuestionTable::toModel)
                 .singleOrNull()
+        }
+    }
+
+    suspend fun getPreviousQuestions(question: Question): List<Question> {
+        return dbQuery {
+            QuestionTable.select { QuestionTable.created.less(question.created) and QuestionTable.category.eq(question.category) }
+                .map(QuestionTable::toModel)
         }
     }
 }

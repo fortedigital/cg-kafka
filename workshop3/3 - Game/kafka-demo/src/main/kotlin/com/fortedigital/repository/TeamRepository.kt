@@ -19,12 +19,34 @@ class Team(
     constructor(id: Int, name: String) : this(id, name, emptyList())
 
     fun toDTO(): TeamDTO {
-        var categoryAnswers: List<CategoryScoreDTO> = answers.groupBy { it.category }
-            .map { (category, answers) -> CategoryScoreDTO(category.ordinal, category, answers.sumOf { it.score }, answers.size) }
+        val distinctAnswers = answers.distinctBy { it.questionId }
+        var categoryAnswers: List<CategoryScoreDTO> = distinctAnswers.groupBy { it.category }
+            .filter { it.key != Category.DEDUPLICATION}
+            .map { (category, a) ->
+               CategoryScoreDTO(category.ordinal, category, a.sumOf { it.score }, a.size, false)
+            }
+
+
+        var deduplicationAnswers = answers.filter { it.category == Category.DEDUPLICATION }
+            .groupBy { it.questionId }
+        var hasError = false
+        var deduplicationScore = 0
+        var deduplicationCount = 0
+        deduplicationAnswers
+            .forEach { (_, a) ->
+                if (a.size > 1) {
+                    hasError = true
+                } else {
+                    deduplicationScore += a.sumOf { it.score }
+                    deduplicationCount++
+                }
+            }
+        val deduplicationCategory = CategoryScoreDTO(Category.DEDUPLICATION.ordinal, Category.DEDUPLICATION, deduplicationScore, deduplicationCount, hasError)
+        categoryAnswers = categoryAnswers.plus(deduplicationCategory)
 
         Category.entries.forEach {
             if (categoryAnswers.none { categoryScoreDTO -> categoryScoreDTO.category == it }) {
-                categoryAnswers = categoryAnswers.plus(CategoryScoreDTO(it.ordinal, it, 0, 0))
+                categoryAnswers = categoryAnswers.plus(CategoryScoreDTO(it.ordinal, it, 0, 0, false))
             }
         }
 

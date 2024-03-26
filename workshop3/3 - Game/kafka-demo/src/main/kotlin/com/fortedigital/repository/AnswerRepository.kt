@@ -5,6 +5,7 @@ import org.jetbrains.exposed.dao.id.IntIdTable
 import com.fortedigital.repository.DatabaseFactory.Companion.dbQuery
 import com.fortedigital.service.formats.Category
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 
 
 class Answer (
@@ -16,7 +17,7 @@ class Answer (
     val category: Category,
     val created: String,
 )  {
-    fun toDTO() = AnswerDTO(category, score)
+    fun toDTO() = AnswerDTO(category, score, questionId)
 }
 class AnswerRepository {
      object AnswerTable : IntIdTable() {
@@ -55,6 +56,12 @@ class AnswerRepository {
             AnswerTable.select { AnswerTable.messageId eq answerId }
                 .map(AnswerTable::toModel)
                 .singleOrNull()
+        }
+    }
+
+    suspend fun deleteByQuestionId(questionId: String) {
+        dbQuery {
+            AnswerTable.deleteWhere { AnswerTable.questionId.eq(questionId) }
         }
     }
 

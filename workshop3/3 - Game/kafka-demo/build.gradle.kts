@@ -64,13 +64,11 @@ dependencies {
     // Database
     implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
+    implementation("org.jetbrains.exposed:exposed-kotlin-datetime:$exposed_version")
     implementation("com.h2database:h2:$h2_version")
     implementation("org.postgresql:postgresql:$postgres_version")
     implementation("com.zaxxer:HikariCP:$hikari_version")
     implementation("org.flywaydb:flyway-core:$flyway_version")
-    // Datetime
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:$kotlinx_datetime_version")
-
 
     // Kafka
     implementation("org.apache.kafka:kafka-clients:$kafka_api_version")

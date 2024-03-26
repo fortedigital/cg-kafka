@@ -11,4 +11,5 @@ export type Answer = {
   category: string;
   totalScore: number;
   totalAnswers: number;
+  hasError: boolean;
 };

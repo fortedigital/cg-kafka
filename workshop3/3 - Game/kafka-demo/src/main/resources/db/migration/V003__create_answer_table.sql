@@ -7,6 +7,6 @@ create table answer (
     category int not null,
     created varchar(64),
 
-    constraint unique_message_id_per_question_id unique (message_id, question_id),
+--     constraint unique_question_id_per_team unique (question_id, team_id),
     constraint fk_answer_team FOREIGN KEY(team_id) REFERENCES "team"(id)
 );
