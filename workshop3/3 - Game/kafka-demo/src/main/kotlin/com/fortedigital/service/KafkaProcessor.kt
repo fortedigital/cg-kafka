@@ -66,8 +66,11 @@ class KafkaProcessor(private val questionRepository: QuestionRepository, private
                 Category.PING_PONG -> {
                     handlePingPong(message)
                 }
-                Category.BASE64 -> {
+                Category.BASE_64 -> {
                     handleBase64(message)
+                }
+                Category.PRIME_NUMBER -> {
+                    handlePrimeNumber(message)
                 }
                 else -> {
                     logger.error("Unknown category: ${commonObject.category}")
@@ -77,6 +80,7 @@ class KafkaProcessor(private val questionRepository: QuestionRepository, private
             logger.error("Error handling message: $message", e)
         }
     }
+
 
     private suspend fun handleQuestion(message: String) {
         val question = jsonMapper.decodeFromString<QuestionMessage>(message)
@@ -153,13 +157,58 @@ class KafkaProcessor(private val questionRepository: QuestionRepository, private
         val answer = Answer(
             0,
             team.id,
-            Category.BASE64.score,
+            Category.BASE_64.score,
             base64.messageId,
             base64.questionId,
             base64.category,
             base64.created,
         )
         answerRepository.create(answer)
+    }
+
+    private suspend fun handlePrimeNumber(message: String) {
+        val prime = handleCommon<AnswerMessage>(message) ?: return
+        val isPrime = when(prime.answer) {
+            "true" -> true
+            "false" -> false
+            else -> {
+                logger.error("Answer is not true or false")
+                return
+            }
+        }
+
+        // check if value in question is prime
+        val question = questionRepository.getByQuestionId(prime.questionId)
+        val value = question!!.question.split("?")[1].trim().toInt()
+        if (isPrime != isPrime(value)) {
+            logger.error("Answer is not correct")
+            return
+        }
+
+        val team = teamRepository.getTeamByName(prime.teamName)
+
+        val answer = Answer(
+            0,
+            team.id,
+            Category.PRIME_NUMBER.score,
+            prime.messageId,
+            prime.questionId,
+            prime.category,
+            prime.created,
+        )
+        answerRepository.create(answer)
+    }
+
+    private fun isPrime(value: Int): Any? {
+        if (value < 2) {
+            return false
+        }
+        for (i in 2..value / 2) {
+            if (value % i == 0) {
+                return false
+            }
+        }
+        return true
     }
 
     private suspend inline fun<reified T: CommonMessage> handleCommon(message: String): T? {

@@ -44,5 +44,7 @@ enum class Category(val score: Int) {
     @SerialName("ping-pong")
     PING_PONG(20),
     @SerialName("base64")
-    BASE64(30)
+    BASE_64(30),
+    @SerialName("is-a-prime")
+    PRIME_NUMBER(40)
 }
