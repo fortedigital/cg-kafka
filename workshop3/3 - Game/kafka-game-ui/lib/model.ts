@@ -7,6 +7,7 @@ export type Team = {
 };
 
 export type Answer = {
+  position: number;
   category: string;
   totalScore: number;
   totalAnswers: number;

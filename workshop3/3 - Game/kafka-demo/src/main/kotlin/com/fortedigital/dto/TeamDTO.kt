@@ -15,6 +15,7 @@ data class TeamDTO(
 
 @Serializable
 data class CategoryScoreDTO(
+    val position: Int,
     val category: Category,
     val totalScore: Int,
     val totalAnswers: Int

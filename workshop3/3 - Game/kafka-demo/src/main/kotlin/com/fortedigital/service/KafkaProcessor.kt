@@ -9,6 +9,7 @@ import kotlinx.serialization.json.Json
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.common.errors.WakeupException
 import java.time.Duration
+import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
 
@@ -51,34 +52,46 @@ class KafkaProcessor(private val questionRepository: QuestionRepository, private
 
     private suspend fun handle(message: String) {
         logger.info("Handling message: $message")
-        val commonObject = jsonMapper.decodeFromString<Common>(message)
-        if (commonObject.type == Type.QUESTION) {
-            val byQuestionId = questionRepository.getByQuestionId(commonObject.messageId)
-            if (byQuestionId != null) {
-                logger.error("Received question exists in db, ignoring")
-            } else {
-                val question = Question(0, commonObject.messageId, commonObject.category, commonObject.created)
-                val id = questionRepository.create(question)
-                logger.info("Question created with id: $id")
+        try {
+            val commonObject = jsonMapper.decodeFromString<Common>(message)
+            if (commonObject.type == Type.QUESTION) {
+                handleQuestion(message)
+                return
             }
-            return
-        }
-        logger.info("Handling message of category: ${commonObject.category}")
-        when(commonObject.category) {
-            Category.TEAM_REGISTRATION -> {
-               handleTeamRegistration(message)
+            logger.info("Handling message of category: ${commonObject.category}")
+            when(commonObject.category) {
+                Category.TEAM_REGISTRATION -> {
+                    handleTeamRegistrationMessage(message)
+                }
+                Category.PING_PONG -> {
+                    handlePingPong(message)
+                }
+                Category.BASE64 -> {
+                    handleBase64(message)
+                }
+                else -> {
+                    logger.error("Unknown category: ${commonObject.category}")
+                }
             }
-            Category.PING_PONG -> {
-                handlePingPong(message)
-            }
-            else -> {
-                logger.error("Unknown category: ${commonObject.category}")
-            }
+        } catch (e: Exception) {
+            logger.error("Error handling message: $message", e)
         }
     }
 
-    private suspend fun handleTeamRegistration(message: String) {
-        val teamRegistration = handleCommon<TeamRegistration>(message) ?: return
+    private suspend fun handleQuestion(message: String) {
+        val question = jsonMapper.decodeFromString<QuestionMessage>(message)
+        val byQuestionId = questionRepository.getByQuestionId(question.messageId)
+        if (byQuestionId != null) {
+            logger.error("Received question exists in db, ignoring")
+        } else {
+            val newQuestion = Question(0, question.messageId, question.question, question.category, question.created)
+            val id = questionRepository.create(newQuestion)
+            logger.info("Question created with id: $id")
+        }
+    }
+
+    private suspend fun handleTeamRegistrationMessage(message: String) {
+        val teamRegistration = handleCommon<AnswerMessage>(message) ?: return
         logger.info("Team registration: ${teamRegistration.teamName} - ${teamRegistration.answer}")
         // determine if answer is a hex-color
         val hexColorRegex = Regex("^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$")
@@ -98,34 +111,58 @@ class KafkaProcessor(private val questionRepository: QuestionRepository, private
     }
 
     private suspend fun handlePingPong(message: String) {
-        val pingPong = handleCommon<TeamRegistration>(message) ?: return
+        val pingPong = handleCommon<AnswerMessage>(message) ?: return
         if (pingPong.answer != "pong") {
             logger.error("Answer is not ping")
             return
         }
 
-        val byMessageId = answerRepository.getByMessageId(pingPong.messageId)
-        if (byMessageId != null) {
-            logger.error("Answer already exists")
-            return
-        }
+
 
         val team = teamRepository.getTeamByName(pingPong.teamName)
 
         val answer = Answer(
             0,
             team.id,
-            10,
+            Category.PING_PONG.score,
             pingPong.messageId,
             pingPong.questionId,
             pingPong.category,
             pingPong.created,
         )
         answerRepository.create(answer)
-
     }
 
-    private suspend inline fun<reified T: CommonQuestion> handleCommon(message: String): T? {
+    private suspend fun handleBase64(message: String) {
+        val base64 = handleCommon<AnswerMessage>(message) ?: return
+        // base64 decode answer
+        val decodedAnswer = Base64.getDecoder().decode(base64.answer)
+
+        // check if decoded value matches with value in question
+        val question = questionRepository.getByQuestionId(base64.questionId)
+
+        val expectedValue = question!!.question.split(" ")[1]
+        if (expectedValue != String(decodedAnswer)) {
+            logger.error("Answer is not correct")
+            return
+        }
+
+
+        val team = teamRepository.getTeamByName(base64.teamName)
+
+        val answer = Answer(
+            0,
+            team.id,
+            Category.BASE64.score,
+            base64.messageId,
+            base64.questionId,
+            base64.category,
+            base64.created,
+        )
+        answerRepository.create(answer)
+    }
+
+    private suspend inline fun<reified T: CommonMessage> handleCommon(message: String): T? {
         val answer = jsonMapper.decodeFromString<T>(message)
         val questionsExistsForAnswer = questionsExistsForAnswer(answer.questionId)
         if (!questionsExistsForAnswer) {
@@ -133,7 +170,13 @@ class KafkaProcessor(private val questionRepository: QuestionRepository, private
             return null
         }
 
-        if (answer !is TeamRegistration) {
+        val byMessageId = answerRepository.getByMessageId(answer.messageId)
+        if (byMessageId != null) {
+            logger.error("Answer already exists")
+            return null
+        }
+
+        if (answer !is AnswerMessage) {
             if (!teamRepository.checkIfTeamExists(answer.teamName)) {
                 logger.error("Team does not exists")
                 return null

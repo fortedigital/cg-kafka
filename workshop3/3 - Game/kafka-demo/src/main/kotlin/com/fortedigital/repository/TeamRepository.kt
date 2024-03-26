@@ -20,11 +20,11 @@ class Team(
 
     fun toDTO(): TeamDTO {
         var categoryAnswers: List<CategoryScoreDTO> = answers.groupBy { it.category }
-            .map { (category, answers) -> CategoryScoreDTO(category, answers.sumOf { it.score }, answers.size) }
+            .map { (category, answers) -> CategoryScoreDTO(category.ordinal, category, answers.sumOf { it.score }, answers.size) }
 
         Category.entries.forEach {
             if (categoryAnswers.none { categoryScoreDTO -> categoryScoreDTO.category == it }) {
-                categoryAnswers = categoryAnswers.plus(CategoryScoreDTO(it, 0, 0))
+                categoryAnswers = categoryAnswers.plus(CategoryScoreDTO(it.ordinal, it, 0, 0))
             }
         }
 

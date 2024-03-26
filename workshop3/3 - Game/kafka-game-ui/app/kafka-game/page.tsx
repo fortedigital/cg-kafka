@@ -5,7 +5,9 @@ import { Team } from "@/lib/model";
 import "./page.module.css";
 
 const TeamComponent = (props: Team) => {
-  console.log(props);
+  // sort answers by position
+  const answers = props.answers.sort((a, b) => a.position - b.position);
+
   return (
     <div className="container border p-4 rounded-3 m-2">
       <div className="row">
@@ -25,7 +27,7 @@ const TeamComponent = (props: Team) => {
         </div>
       </div>
       <div className="row">
-        {props.answers.map((answer, index) => (
+        {answers.map((answer, index) => (
           <div key={index} className="col">
             <h6>{answer.category}</h6>
             <p>{answer.totalAnswers}</p>
