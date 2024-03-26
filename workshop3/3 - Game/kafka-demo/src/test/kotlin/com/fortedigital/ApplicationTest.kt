@@ -1,6 +1,7 @@
 package com.fortedigital
 
 import com.fortedigital.config.configureRouting
+import com.fortedigital.repository.TeamRepository
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
@@ -11,7 +12,8 @@ class ApplicationTest {
     @Test
     fun testRoot() = testApplication {
         application {
-            configureRouting(teamRepository)
+            val teamRepository = TeamRepository()
+            configureRouting(teamRepository, true)
         }
         client.get("/").apply {
             assertEquals(HttpStatusCode.OK, status)

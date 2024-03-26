@@ -129,8 +129,8 @@ class KafkaProcessor(private val questionRepository: QuestionRepository, private
         logger.info("Team created with id: $id")
         val answer = Answer(
             0,
-            team.id,
-            Category.PING_PONG.score,
+            id,
+            Category.TEAM_REGISTRATION.score,
             teamRegistration.messageId,
             teamRegistration.questionId,
             teamRegistration.category,
@@ -314,7 +314,7 @@ class KafkaProcessor(private val questionRepository: QuestionRepository, private
         val answer = Answer(
             0,
             team.id,
-            Category.PRIME_NUMBER.score,
+            Category.TRANSACTIONS.score,
             transactions.messageId,
             transactions.questionId,
             transactions.category,
