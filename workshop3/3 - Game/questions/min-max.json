@@ -1,0 +1,37 @@
+[
+  {
+    "type": "QUESTION",
+    "messageId": "1f6cf2ab-00e1-4d2b-82e2-7503b882f1c1",
+    "question": "HOYESTE i [10, 100, 20, 30, 80, 40, 50, 60, 70, 90]",
+    "category": "min-max",
+    "created": "2024-04-02T08:00:00.000000"
+  },
+  {
+    "type": "QUESTION",
+    "messageId": "63a4c8b4-f792-4d3b-af72-5b0ee11d5390",
+    "question": "HOYESTE i [25, 66, 12, 3, 53, 54, 94, 67, 23, 55, 41, 30, 40, 50, 60, 70, 80, 10, 11, 1]",
+    "category": "min-max",
+    "created": "2022-11-17T15:14:27.581147"
+  },
+  {
+    "type": "QUESTION",
+    "messageId": "63a4c8b4-f792-4d3b-af72-5b0ee11d5390",
+    "question": "LAVESTE i [25, 66, 12, 3, 53, 54, 94, 67, 23, 55, 41, 30, 40, 50, 60, 70, 80, 10, 11, 1]",
+    "category": "min-max",
+    "created": "2022-11-17T15:14:27.581147"
+  },
+  {
+    "type": "QUESTION",
+    "messageId": "f5e01ac7-1f78-4dc0-a1e7-607b8d4766c2",
+    "question": "HOYESTE i [72, 8, 16, 64, 24, 32, 80, 40, 48, 56]",
+    "category": "min-max",
+    "created": "2024-04-02T08:03:00.000000"
+  },
+  {
+    "type": "QUESTION",
+    "messageId": "c7f8f0e9-29b2-46c5-a810-7b3e5f049541",
+    "question": "LAVESTE i [63, 7, 14, 49, 70, 21, 28, 35, 42, 56]",
+    "category": "min-max",
+    "created": "2024-04-02T08:04:00.000000"
+  }
+]

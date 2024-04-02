@@ -1,0 +1,23 @@
+[
+  {
+    "type": "QUESTION",
+    "messageId": "f3bfc587-276e-4d8d-9e5f-8b656e21b70c",
+    "question": "answer this question only once with an <you wont dupe me!>",
+    "category": "deduplication",
+    "created": "2024-04-02T10:00:00.000000"
+  },
+  {
+    "type": "QUESTION",
+    "messageId": "6f3cf64b-7c7d-4623-afad-cdc0b50b2458",
+    "question": "answer this question only once with an <you wont dupe me!>",
+    "category": "deduplication",
+    "created": "2024-03-02T10:00:00.000000"
+  },
+  {
+    "type": "QUESTION",
+    "messageId": "e134a518-783e-45b3-b5d6-67903a3c2d8a",
+    "question": "answer this question only once with an <you wont dupe me!>",
+    "category": "deduplication",
+    "created": "2024-02-02T10:00:00.000000"
+  }
+]
