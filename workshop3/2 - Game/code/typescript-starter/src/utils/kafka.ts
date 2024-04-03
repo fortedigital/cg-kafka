@@ -1,15 +1,10 @@
-import dotenv from "dotenv";
-import { Consumer, Kafka, Producer } from "kafkajs";
-import { v4 as uuidv4 } from "uuid";
+import { Consumer, Kafka, Producer } from 'kafkajs';
+import { v4 as uuidv4 } from 'uuid';
 import { MessageType, Question } from "../types";
 
-dotenv.config();
-
-
-const QUIZ_TOPIC = process.env.QUIZ_TOPIC;
-
-const BROKER_URL = process.env.BOOTSTRAP_SERVERS;
-const CONSUMER_GROUP_ID = process.env.CONSUMER_GROUP_ID
+const QUIZ_TOPIC = process.env.QUIZ_TOPIC || 'kafka-game'
+const BROKER_URL = process.env.BOOTSTRAP_SERVERS || 'kafka.daud.dev:19092'
+const CONSUMER_GROUP_ID = process.env.CONSUMER_GROUP_ID || '<create your own>'
 
 let producer: Producer;
 let teamName: string;

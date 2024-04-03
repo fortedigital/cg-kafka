@@ -9,25 +9,25 @@ export enum AssessmentStatus {
   Failure = "FAILURE",
 }
 
-export interface LeesahMessage {
+export interface KafkaMessage {
   messageId: string;
   type: MessageType;
   category: string;
   created: string;
 }
 
-export interface Question extends LeesahMessage {
+export interface Question extends KafkaMessage {
   category: string;
   question: string;
 }
 
-export interface Answer extends LeesahMessage {
+export interface Answer extends KafkaMessage {
   questionId: string;
   teamName: string;
   answer: string;
 }
 
-export interface Assessment extends LeesahMessage {
+export interface Assessment extends KafkaMessage {
   questionId: string;
   answerId: string;
   type: MessageType;
