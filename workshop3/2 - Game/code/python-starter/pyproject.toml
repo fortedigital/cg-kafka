@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "leesah-game"
+version = "0.1.0"
+description = "Leesah er et Pythonbibliotek for å spille det hendelsedrevet applikasjonsutviklingspillet Leesah Game"
+authors = ["NAV"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "leesah"}]
+repository = "https://github.com/navikt/leesah-game-python"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+confluent-kafka = "^2.3.0"
+PyYAML = "^6.0.1"
+pydantic = "^2.6.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
